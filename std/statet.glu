@@ -76,4 +76,4 @@ let eval_state_t f state : [Functor m] -> StateT s m a -> s -> m a =
 let exec_state_t f state : [Functor m] -> StateT s m a -> s -> m s =
     map (\x -> x.state) (run_state_t f state)
 
-{ StateT, applicative, functor, monad, put, get, modify, run_state_t, eval_state_t, exec_state_t }
+{ StateT, applicative, functor, monad, transformer, put, get, modify, run_state_t, eval_state_t, exec_state_t }

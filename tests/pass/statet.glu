@@ -4,6 +4,7 @@ let { Test, run, assert, assert_eq, test, group, ? } = import! std.test
 let { StateT, put, get, modify, run_state_t, eval_state_t, exec_state_t, ? } = import! std.statet
 let { Applicative, wrap, (*>) } = import! std.applicative
 let { Monad, (>>=) } = import! std.monad
+let { map } = import! std.functor
 let { Option, ? } = import! std.option
 let { (++), ? } = import! std.string
 // let { ? } = import! std.array
@@ -40,10 +41,10 @@ group "statet" [
     // FIXME without concrete type, below expressions assume type of List, as used above, instead of referring to a generic type
     // TODO convert from state tests to statet tests
     group "StateT s m has state effects" [
-        test "modify exec_state_t" <| \_ -> (assert_eq (exec_state_t (modify (\x -> x + 2) *> modify (\x -> x * 4)) 0) 8),
-        test "modify eval_state_t" <| \_ -> (assert_eq (eval_state_t (modify (\x -> x + 2) *> get) 0) 2),
-        test "put get eval_state_t" <| \_ -> (assert_eq (eval_state_t (put "hello" *> get) "") "hello"),
-        test "put get run_state_t" <| \_ -> (assert_eq (run_state_t (put "hello" *> get) "").value "hello"),
+        test "modify exec_state_t" <| \_ -> (assert_eq (exec_state_t (modify (\x -> x + 2) *> modify (\x -> x * 4)) 0) (wrap 8)),
+        test "modify eval_state_t" <| \_ -> (assert_eq (eval_state_t (modify (\x -> x + 2) *> get) 0) (wrap 2)),
+        test "put get eval_state_t" <| \_ -> (assert_eq (eval_state_t (put "hello" *> get) "") (wrap "hello")),
+        test "put get run_state_t" <| \_ -> (assert_eq (map (\r -> r.value) (run_state_t (put "hello" *> get) "")) (wrap "hello")),
         //test "gets ..." <| // TODO
     ],
     // TODO
